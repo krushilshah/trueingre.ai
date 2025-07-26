@@ -1013,7 +1013,8 @@
 
         async function sendToAI(text) {
             try {
-                const response = await fetch('http://localhost:8000/api/analyze-food', { // Adjust URL for your Laravel backend
+                // http://localhost:8000/api/analyze-food
+                const response = await fetch('https://slangiee.social/api/analyze-food', { // Adjust URL for your Laravel backend
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
