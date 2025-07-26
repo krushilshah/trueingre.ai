@@ -1,1 +1,1201 @@
-hello
+<!DOCTYPE html>
+<html lang="en">
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrueIngre AI-Powered Food Package Analyzer</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥗</text></svg>">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #0a0a1f 0%, #1a1a2e 35%, #16213e 100%);
+            --secondary-gradient: linear-gradient(135deg, #1e1e3f 0%, #2a2d5a 50%, #3d4f7d 100%);
+            --accent-gradient: linear-gradient(45deg, #6c63ff 0%, #ff6b6b 50%, #4ecdc4 100%);
+            --card-gradient: linear-gradient(135deg, rgba(30, 30, 63, 0.95) 0%, rgba(42, 45, 90, 0.9) 100%);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: #b8bcc8;
+            --text-muted: #8892b0;
+            --success-color: #4CAF50;
+            --warning-color: #FFC107;
+            --danger-color: #ff4757;
+            --info-color: #3742fa;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.2);
+            --shadow-heavy: rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--primary-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(108, 99, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 107, 107, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(78, 205, 196, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -2;
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Floating Particles */
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(108, 99, 255, 0.4);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .particle:nth-child(even) {
+            background: rgba(255, 107, 107, 0.3);
+            animation-duration: 10s;
+        }
+
+        .particle:nth-child(3n) {
+            background: rgba(78, 205, 196, 0.3);
+            animation-duration: 12s;
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) translateX(0px) rotate(0deg); 
+                opacity: 0; 
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            50% { 
+                transform: translateY(-150px) translateX(20px) rotate(180deg); 
+                opacity: 0.8; 
+            }
+        }
+
+        /* Typography */
+        .gradient-text {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        /* Glass Card Effect */
+        .glass-card {
+            background: var(--card-gradient);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 
+                0 25px 50px var(--shadow-heavy),
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 35px 70px var(--shadow-heavy),
+                0 0 0 1px rgba(255, 255, 255, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        /* Container Responsive */
+        .container {
+            max-width: 1400px;
+            padding: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding: 2rem;
+            }
+        }
+
+        /* Header Styles */
+        .header-container {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem 0;
+        }
+
+        .header-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .header-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        /* Upload Zone */
+        .upload-zone {
+            border: 2px dashed var(--glass-border);
+            border-radius: 20px;
+            padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 3vw, 2rem);
+            margin: 1.5rem 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            text-align: center;
+        }
+
+        .upload-zone:hover {
+            border-color: #6c63ff;
+            background: rgba(108, 99, 255, 0.08);
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 20px 40px rgba(108, 99, 255, 0.2);
+        }
+
+        .upload-zone.dragover {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.08);
+            transform: scale(1.02);
+            box-shadow: 0 25px 50px rgba(255, 107, 107, 0.3);
+        }
+
+        .upload-icon {
+            font-size: clamp(3rem, 8vw, 5rem);
+            margin-bottom: 1rem;
+            display: block;
+            opacity: 0.9;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .upload-zone h4 {
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .upload-zone p {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+
+        /* Button Styles */
+        .btn-gradient {
+            background: var(--accent-gradient);
+            border: none;
+            color: white;
+            padding: clamp(12px, 3vw, 18px) clamp(20px, 5vw, 35px);
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(108, 99, 255, 0.3);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 20px 45px rgba(108, 99, 255, 0.4);
+            color: white;
+        }
+
+        .btn-gradient:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-gradient:disabled {
+            background: linear-gradient(45deg, #4a4a4a, #666666);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0.7;
+        }
+
+        .btn-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-gradient:hover::before {
+            left: 100%;
+        }
+
+        .btn-outline-light {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: var(--text-primary);
+            padding: clamp(10px, 3vw, 16px) clamp(18px, 5vw, 33px);
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-outline-light:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: clamp(0.5rem, 2vw, 1rem);
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .action-buttons button {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        @media (max-width: 576px) {
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-buttons button {
+                width: 100%;
+            }
+        }
+
+        /* Image Preview */
+        .preview-container {
+            margin: 1rem 0;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            max-height: clamp(250px, 50vw, 400px);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px var(--shadow-medium);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            object-fit: cover;
+        }
+
+        .image-preview:hover {
+            transform: scale(1.02);
+            box-shadow: 0 25px 50px var(--shadow-heavy);
+        }
+
+        /* Progress Section */
+        .progress-container {
+            padding: clamp(1.5rem, 4vw, 2.5rem);
+            margin: 2rem 0;
+        }
+
+        .progress {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-bar {
+            background: var(--accent-gradient);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            animation: progressShimmer 2s infinite;
+        }
+
+        @keyframes progressShimmer {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+
+        /* Results Section */
+        .result-card {
+            background: var(--card-gradient);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: clamp(1.5rem, 4vw, 2.5rem);
+            margin: clamp(1rem, 3vw, 2rem) 0;
+            box-shadow: 0 20px 40px var(--shadow-medium);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-gradient);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .section-title {
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            font-size: clamp(1.1rem, 3vw, 1.3rem);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Health Score */
+        .health-score {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 800;
+            text-align: center;
+            margin: clamp(1rem, 3vw, 2rem) 0;
+            padding: clamp(2rem, 5vw, 3rem);
+            border-radius: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .score-excellent { 
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(76, 175, 80, 0.1));
+            border: 2px solid rgba(76, 175, 80, 0.4);
+            color: #4CAF50;
+            box-shadow: 0 0 30px rgba(76, 175, 80, 0.3);
+        }
+
+        .score-good { 
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 193, 7, 0.1));
+            border: 2px solid rgba(255, 193, 7, 0.4);
+            color: #FFC107;
+            box-shadow: 0 0 30px rgba(255, 193, 7, 0.3);
+        }
+
+        .score-average { 
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.2), rgba(255, 152, 0, 0.1));
+            border: 2px solid rgba(255, 152, 0, 0.4);
+            color: #FF9800;
+            box-shadow: 0 0 30px rgba(255, 152, 0, 0.3);
+        }
+
+        .score-poor { 
+            background: linear-gradient(135deg, rgba(255, 71, 87, 0.2), rgba(255, 71, 87, 0.1));
+            border: 2px solid rgba(255, 71, 87, 0.4);
+            color: #ff4757;
+            box-shadow: 0 0 30px rgba(255, 71, 87, 0.3);
+        }
+
+        .badge-health {
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+        }
+
+        /* Ingredient Items */
+        .ingredient-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: clamp(1rem, 3vw, 1.5rem);
+            margin: 0.75rem 0;
+            border-left: 4px solid transparent;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+        }
+
+        .ingredient-positive { 
+            border-left-color: var(--success-color); 
+            background: rgba(76, 175, 80, 0.08);
+        }
+        .ingredient-neutral { 
+            border-left-color: var(--info-color); 
+            background: rgba(55, 66, 250, 0.08);
+        }
+        .ingredient-negative { 
+            border-left-color: var(--danger-color); 
+            background: rgba(255, 71, 87, 0.08);
+        }
+
+        .ingredient-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(8px) translateY(-2px);
+            box-shadow: 0 10px 25px var(--shadow-light);
+        }
+
+        /* Badges */
+        .badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin: 0.2rem;
+        }
+
+        .badge.bg-secondary {
+            background: rgba(255, 255, 255, 0.15) !important;
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Alert Styles */
+        .alert {
+            border: none;
+            border-radius: 16px;
+            padding: clamp(1rem, 3vw, 1.5rem);
+            margin: 1.5rem 0;
+            backdrop-filter: blur(20px);
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, rgba(255, 71, 87, 0.2), rgba(255, 71, 87, 0.1));
+            color: var(--danger-color);
+            border: 1px solid rgba(255, 71, 87, 0.3);
+        }
+
+        /* Spinner Animation */
+        .spinner {
+            width: clamp(40px, 8vw, 60px);
+            height: clamp(40px, 8vw, 60px);
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #6c63ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Animations */
+        .pulse-animation {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+
+        .slide-in {
+            animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Grid */
+        .nutrition-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: clamp(0.75rem, 2vw, 1rem);
+            margin: 1rem 0;
+        }
+
+        .nutrition-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: clamp(1rem, 3vw, 1.25rem);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nutrition-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 1rem 0;
+                margin-bottom: 1.5rem;
+            }
+
+            .upload-zone {
+                margin: 1rem 0;
+            }
+
+            .result-card {
+                margin: 1rem 0;
+            }
+
+            .health-score {
+                margin: 1rem 0;
+            }
+
+            .row.align-items-center {
+                text-align: center;
+            }
+
+            .col-md-4, .col-md-8 {
+                margin-bottom: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 0.5rem;
+            }
+
+            .glass-card {
+                border-radius: 16px;
+                margin: 0.5rem 0;
+            }
+
+            .result-card {
+                border-radius: 16px;
+            }
+
+            .upload-zone {
+                border-radius: 16px;
+            }
+        }
+
+        /* Dark theme enhancements */
+        ::selection {
+            background: rgba(108, 99, 255, 0.3);
+            color: white;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-gradient);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            opacity: 0.8;
+        }
+
+        /* Enhanced glass effects for better visibility */
+        .glass-card {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(30, 30, 63, 0.85);
+        }
+
+        /* Better contrast for text elements */
+        .text-muted {
+            color: var(--text-muted) !important;
+        }
+
+        .lead {
+            font-size: clamp(1rem, 2.5vw, 1.125rem);
+            font-weight: 400;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Floating Background Elements -->
+    <div class="floating-particles" id="particles"></div>
+
+    <div class="container py-4">
+        <!-- Header -->
+        <div class="header-container">
+            <h1 class="header-title">
+                <span class="gradient-text">🍃 TrueIngre.ai</span>
+            </h1>
+            <p class="header-subtitle">
+                AI-powered food package analyzer for instant health insights
+            </p>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="upload-container">
+            <div class="glass-card p-4">
+                <div class="row">
+                    <div class="col-lg-8 mb-4 mb-lg-0">
+                        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('imageInput').click()">
+                            <span class="upload-icon">📷</span>
+                            <h4 class="mb-2">Upload Food Package Image</h4>
+                            <p class="text-muted mb-3">Drag & drop or click to browse your device</p>
+                            <div class="d-flex justify-content-center gap-2 flex-wrap">
+                                <span class="badge bg-secondary">📄 JPG</span>
+                                <span class="badge bg-secondary">🖼️ PNG</span>
+                                <span class="badge bg-secondary">🎨 WEBP</span>
+                            </div>
+                        </div>
+                        <input type="file" id="imageInput" accept="image/*" class="d-none">
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="preview-container">
+                            <div id="imagePreview" class="mb-3"></div>
+                            <div class="action-buttons">
+                                <button id="analyzeBtn" class="btn btn-gradient" disabled>
+                                    <span class="me-2">🧠</span>Analyze
+                                </button>
+                                <button id="clearBtn" class="btn btn-outline-light" style="display: none;">
+                                    <span class="me-2">🗑️</span>Clear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div id="progressSection" class="progress-container glass-card" style="display: none;">
+            <div class="d-flex align-items-center mb-3">
+                <div class="spinner me-3"></div>
+                <h5 class="mb-0" id="progressText">Processing image...</h5>
+            </div>
+            <div class="progress">
+                <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+            </div>
+            <small class="text-muted mt-2 d-block" id="progressSubtext">Initializing OCR engine...</small>
+        </div>
+
+        <!-- Error Section -->
+        <div id="errorSection" class="alert alert-danger glass-card" style="display: none;">
+            <span class="me-2">⚠️</span>
+            <span id="errorMessage"></span>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" style="display: none;">
+            <!-- Health Score Card -->
+            <div class="result-card slide-in">
+                <div class="row align-items-center">
+                    <div class="col-md-4 text-center mb-4 mb-md-0">
+                        <h3 class="gradient-text mb-3">📊 Health Score</h3>
+                        <div class="health-score" id="healthScore">--</div>
+                        <div class="badge-health" id="healthBadge">Analyzing...</div>
+                    </div>
+                    <div class="col-md-8">
+                        <h4 class="section-title">📈 Overall Assessment</h4>
+                        <p id="overallAssessment" class="lead">Analysis in progress...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Analysis -->
+            <div class="result-card slide-in">
+                <h4 class="section-title">🔬 Detailed Analysis</h4>
+                <div id="detailedAnalysis">
+                    <div class="text-center p-4">
+                        <div class="spinner"></div>
+                        <p class="mt-3">Analyzing ingredients and nutritional information...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ingredients Analysis -->
+            <div class="result-card slide-in">
+                <h4 class="section-title">📋 Ingredients Breakdown</h4>
+                <div id="ingredientsAnalysis">
+                    <div class="text-center p-4">
+                        <div class="spinner"></div>
+                        <p class="mt-3">Breaking down ingredients...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="result-card slide-in">
+                <h4 class="section-title">💡 Health Recommendations</h4>
+                <div id="recommendations">
+                    <div class="text-center p-4">
+                        <div class="spinner"></div>
+                        <p class="mt-3">Generating personalized recommendations...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min. -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script>
+        // Check if Tesseract is loaded
+        if (typeof Tesseract === 'undefined') {
+            console.error('Tesseract.js failed to load from CDN');
+            document.addEventListener('DOMContentLoaded', function () {
+                showError('OCR engine failed to load. Please refresh the page and try again.');
+            });
+        }
+
+        let selectedImage = null;
+        let extractedText = '';
+
+        // DOM Elements
+        const uploadZone = document.getElementById('uploadZone');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const progressSection = document.getElementById('progressSection');
+        const errorSection = document.getElementById('errorSection');
+        const resultsSection = document.getElementById('resultsSection');
+
+        // Initialize floating particles
+        document.addEventListener('DOMContentLoaded', function() {
+            createFloatingParticles();
+        });
+
+        function createFloatingParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Event Listeners
+        imageInput.addEventListener('change', handleImageSelect);
+        analyzeBtn.addEventListener('click', analyzeImage);
+        clearBtn.addEventListener('click', clearImage);
+
+        // Drag and Drop
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleImageFile(files[0]);
+            }
+        });
+
+        function handleImageSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleImageFile(file);
+            }
+        }
+
+        function handleImageFile(file) {
+            if (!file.type.startsWith('image/')) {
+                showError('Please select a valid image file');
+                return;
+            }
+
+            selectedImage = file;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagePreview.innerHTML = `
+                    <img src="${e.target.result}" alt="Selected image" class="image-preview">
+                `;
+                analyzeBtn.disabled = false;
+                clearBtn.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearImage() {
+            selectedImage = null;
+            extractedText = '';
+            imageInput.value = '';
+            imagePreview.innerHTML = '';
+            analyzeBtn.disabled = true;
+            clearBtn.style.display = 'none';
+            progressSection.style.display = 'none';
+            errorSection.style.display = 'none';
+            resultsSection.style.display = 'none';
+        }
+
+        async function analyzeImage() {
+            if (!selectedImage) return;
+
+            try {
+                hideError();
+                showProgress();
+
+                // Step 1: Extract text using OCR
+                updateProgress(20, 'Extracting text from image...', 'Initializing OCR...');
+                extractedText = await performOCR(selectedImage);
+
+                if (!extractedText.trim()) {
+                    throw new Error('No text found in the image. Please try with a clearer image.');
+                }
+
+                updateProgress(60, 'Text extracted successfully', 'Sending to AI for analysis...');
+
+                // Step 2: Send to AI for analysis
+                const analysis = await sendToAI(extractedText);
+
+                updateProgress(100, 'Analysis complete!', 'Displaying results...');
+
+                setTimeout(() => {
+                    hideProgress();
+                    displayResults(analysis);
+                }, 1000);
+
+            } catch (error) {
+                hideProgress();
+                showError(error.message);
+            }
+        }
+
+        async function performOCR(imageFile) {
+            return new Promise(async (resolve, reject) => {
+                let worker = null;
+                
+                try {
+                    updateProgress(25, 'Initializing OCR engine...', 'Loading Tesseract worker...');
+                    
+                    // Create worker without logger function
+                    worker = await Tesseract.createWorker();
+                    
+                    // Handle progress updates externally
+                    worker.onProgress = (progress) => {
+                        console.log('OCR Progress:', progress);
+                        if (progress.status === 'recognizing text') {
+                            const percent = Math.round(progress.progress * 35) + 30; // 30-65%
+                            updateProgress(percent, 'Extracting text from image...', 
+                                `Recognition: ${Math.round(progress.progress * 100)}%`);
+                        }
+                    };
+                    
+                    updateProgress(40, 'Loading language model...', 'Preparing for text recognition...');
+                    
+                    // Load English language
+                    await worker.loadLanguage('eng');
+                    await worker.initialize('eng');
+                    
+                    // Set OCR parameters
+                    await worker.setParameters({
+                        tessedit_ocr_engine_mode: Tesseract.OEM.TESSERACT_LSTM_COMBINED,
+                        tessedit_pageseg_mode: Tesseract.PSM.AUTO,
+                        preserve_interword_spaces: '1'
+                    });
+
+                    updateProgress(45, 'OCR engine ready', 'Starting text recognition...');
+                    
+                    // Perform OCR
+                    const { data: { text, confidence } } = await worker.recognize(imageFile);
+                    
+                    console.log('OCR Confidence:', confidence);
+                    console.log('Extracted Text:', text);
+                    
+                    // Clean up worker
+                    await worker.terminate();
+                    worker = null;
+                    
+                    if (!text || text.trim().length < 3) {
+                        reject(new Error('No readable text found. Please ensure the image is clear and contains text.'));
+                        return;
+                    }
+                    
+                    if (confidence < 30) {
+                        console.warn('Low OCR confidence:', confidence);
+                    }
+                    
+                    updateProgress(70, 'Text extraction complete', 'Preparing for AI analysis...');
+                    resolve(text);
+                    
+                } catch (error) {
+                    console.error('OCR Error Details:', error);
+                    if (worker) {
+                        try {
+                            await worker.terminate();
+                        } catch (terminateError) {
+                            console.error('Error terminating worker:', terminateError);
+                        }
+                    }
+                    
+                    let errorMessage = 'Failed to extract text from image. ';
+                    if (error.message.includes('Network')) {
+                        errorMessage += 'Please check your internet connection and try again.';
+                    } else if (error.message.includes('Worker')) {
+                        errorMessage += 'OCR engine failed to initialize. Please refresh the page and try again.';
+                    } else {
+                        errorMessage += 'Please try with a clearer image or different format.';
+                    }
+                    
+                    reject(new Error(errorMessage));
+                }
+            });
+        }
+
+        async function sendToAI(text) {
+            try {
+                const response = await fetch('http://localhost:8000/api/analyze-food', { // Adjust URL for your Laravel backend
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        extracted_text: text
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                throw new Error('Failed to analyze food: ' + error.message);
+            }
+        }
+
+        function displayResults(analysis) {
+            resultsSection.style.display = 'block';
+
+            // Display health score
+            const score = analysis.health_score || 0;
+            document.getElementById('healthScore').textContent = score;
+            document.getElementById('healthScore').className = `health-score ${getScoreClass(score)}`;
+
+            const badge = document.getElementById('healthBadge');
+            badge.textContent = getScoreLabel(score);
+            badge.className = `badge-health ${getScoreBadgeClass(score)}`;
+
+            // Display overall assessment
+            document.getElementById('overallAssessment').textContent =
+                analysis.overall_assessment || 'Analysis completed';
+
+            // Display detailed analysis
+            document.getElementById('detailedAnalysis').innerHTML =
+                formatDetailedAnalysis(analysis.detailed_analysis || 'No detailed analysis available');
+
+            // Display ingredients
+            document.getElementById('ingredientsAnalysis').innerHTML =
+                formatIngredients(analysis.ingredients_analysis || []);
+
+            // Display recommendations
+            document.getElementById('recommendations').innerHTML =
+                formatRecommendations(analysis.recommendations || []);
+        }
+
+        function getScoreClass(score) {
+            if (score >= 80) return 'score-excellent';
+            if (score >= 60) return 'score-good';
+            if (score >= 40) return 'score-average';
+            return 'score-poor';
+        }
+
+        function getScoreLabel(score) {
+            if (score >= 80) return 'Excellent';
+            if (score >= 60) return 'Good';
+            if (score >= 40) return 'Average';
+            return 'Poor';
+        }
+
+        function getScoreBadgeClass(score) {
+            if (score >= 80) return 'bg-success';
+            if (score >= 60) return 'bg-warning text-dark';
+            if (score >= 40) return 'bg-warning text-dark';
+            return 'bg-danger';
+        }
+
+        function formatDetailedAnalysis(analysis) {
+            if (typeof analysis === 'string') {
+                return `<p class="lead">${analysis}</p>`;
+            }
+            return '<p class="lead">Detailed analysis is being processed...</p>';
+        }
+
+        function formatIngredients(ingredients) {
+            if (!Array.isArray(ingredients) || ingredients.length === 0) {
+                return '<p class="text-muted">No specific ingredients identified</p>';
+            }
+
+            return ingredients.map(ingredient => `
+                <div class="ingredient-item ingredient-${ingredient.category || 'moderate'}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-1">${ingredient.name}</h6>
+                        <span class="badge bg-secondary">${ingredient.category || 'unknown'}</span>
+                    </div>
+                    <p class="mb-0 small text-muted">${ingredient.description || 'No description available'}</p>
+                </div>
+            `).join('');
+        }
+
+        function formatRecommendations(recommendations) {
+            if (!Array.isArray(recommendations) || recommendations.length === 0) {
+                return '<p class="text-muted">No specific recommendations available</p>';
+            }
+
+            return `
+                <div class="row">
+                    ${recommendations.map(rec => `
+                        <div class="col-md-6 mb-3">
+                            <div class="glass-card p-3">
+                                <h6 class="text-info mb-2">
+                                    <i class="fas ${rec.icon || 'fa-info-circle'} me-2"></i>
+                                    ${rec.title || 'Recommendation'}
+                                </h6>
+                                <p class="mb-0 small">${rec.description || rec}</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function showProgress() {
+            progressSection.style.display = 'block';
+            analyzeBtn.disabled = true;
+        }
+
+        function hideProgress() {
+            progressSection.style.display = 'none';
+            analyzeBtn.disabled = false;
+        }
+
+        function updateProgress(percent, text, subtext) {
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('progressText').textContent = text;
+            document.getElementById('progressSubtext').textContent = subtext;
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            errorSection.style.display = 'block';
+        }
+
+        function hideError() {
+            errorSection.style.display = 'none';
+        }
+
+        // Keep the test OCR function but it's not connected to any button
+        async function testOCREngine() {
+            try {
+                showProgress();
+                updateProgress(10, 'Testing OCR engine...', 'Initializing Tesseract...');
+
+                // Create a simple test worker
+                const worker = await Tesseract.createWorker();
+
+                updateProgress(30, 'Loading OCR core...', 'Downloading engine...');
+
+                worker.worker.onmessage = (m) => {
+                    console.log('Test Progress:', m.data);
+                };
+
+                updateProgress(50, 'Initializing OCR...', 'Setting up language model...');
+
+                await worker.loadLanguage('eng');
+                await worker.initialize('eng');
+
+                updateProgress(70, 'Loading language data...', 'Preparing English model...');
+
+                updateProgress(90, 'OCR engine ready!', 'Test completed successfully');
+
+                await worker.terminate();
+
+                updateProgress(100, 'Test successful!', 'OCR engine is working properly');
+
+                setTimeout(() => {
+                    hideProgress();
+                    showError('✅ OCR engine test passed! You can now analyze food packages.');
+                    document.getElementById('errorMessage').className = 'text-success';
+                }, 1000);
+
+            } catch (error) {
+                console.error('OCR test failed:', error);
+                hideProgress();
+                showError('❌ OCR engine test failed: ' + error.message + '. Please refresh the page and try again.');
+            }
+        }
+    </script>
+</body>
+
+</html>
