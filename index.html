@@ -1,3 +1,8 @@
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -198,41 +203,6 @@
             font-size: clamp(0.9rem, 2vw, 1rem);
         }
 
-        /* Upload Options */
-        .upload-options {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .upload-option-btn {
-            background: var(--accent-gradient);
-            border: none;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            min-width: 140px;
-            justify-content: center;
-        }
-
-        .upload-option-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(108, 99, 255, 0.3);
-        }
-
-        .upload-option-btn:active {
-            transform: translateY(0);
-        }
-
         /* Button Styles */
         .btn-gradient {
             background: var(--accent-gradient);
@@ -325,16 +295,6 @@
             
             .action-buttons button {
                 width: 100%;
-            }
-
-            .upload-options {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .upload-option-btn {
-                width: 100%;
-                max-width: 200px;
             }
         }
 
@@ -751,33 +711,17 @@
             <div class="glass-card p-4">
                 <div class="row">
                     <div class="col-lg-8 mb-4 mb-lg-0">
-                        <div class="upload-zone" id="uploadZone">
+                        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('imageInput').click()">
                             <span class="upload-icon">📷</span>
                             <h4 class="mb-2">Upload Food Package ingredients Image</h4>
-                            <p class="text-muted mb-3">Choose your preferred method to add an image</p>
-                            
-                            <!-- Upload Options -->
-                            <div class="upload-options">
-                                <button class="upload-option-btn" onclick="document.getElementById('imageInput').click()">
-                                    <i class="fas fa-folder-open"></i>
-                                    Choose from Gallery
-                                </button>
-                                <button class="upload-option-btn" onclick="document.getElementById('cameraInput').click()">
-                                    <i class="fas fa-camera"></i>
-                                    Take Photo
-                                </button>
-                            </div>
-                            
+                            <p class="text-muted mb-3">Drag & drop or click to browse your device</p>
                             <div class="d-flex justify-content-center gap-2 flex-wrap">
                                 <span class="badge bg-secondary">📄 JPG</span>
                                 <span class="badge bg-secondary">🖼️ PNG</span>
                                 <span class="badge bg-secondary">🎨 WEBP</span>
                             </div>
                         </div>
-                        <!-- Gallery Input -->
                         <input type="file" id="imageInput" accept="image/*" class="d-none">
-                        <!-- Camera Input -->
-                        <input type="file" id="cameraInput" accept="image/*" capture="environment" class="d-none">
                     </div>
                     <div class="col-lg-4">
                         <div class="preview-container">
@@ -813,7 +757,7 @@
             <span class="me-2">⚠️</span>
             <span id="errorMessage"></span>
         </div>
-<p class="header-subtitle-sub">
+        <p class="header-subtitle-sub text-center">
                 AI-generated reference only!
             </p>
         <!-- Results Section -->
@@ -954,7 +898,6 @@
         // DOM Elements
         const uploadZone = document.getElementById('uploadZone');
         const imageInput = document.getElementById('imageInput');
-        const cameraInput = document.getElementById('cameraInput');
         const imagePreview = document.getElementById('imagePreview');
         const analyzeBtn = document.getElementById('analyzeBtn');
         const clearBtn = document.getElementById('clearBtn');
@@ -964,7 +907,6 @@
 
         // Event Listeners
         imageInput.addEventListener('change', handleImageSelect);
-        cameraInput.addEventListener('change', handleImageSelect);
         analyzeBtn.addEventListener('click', analyzeImage);
         clearBtn.addEventListener('click', clearImage);
 
@@ -1016,7 +958,6 @@
             selectedImage = null;
             extractedText = '';
             imageInput.value = '';
-            cameraInput.value = '';
             imagePreview.innerHTML = '';
             analyzeBtn.disabled = true;
             clearBtn.style.display = 'none';
