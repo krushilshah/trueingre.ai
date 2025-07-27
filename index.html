@@ -7,6 +7,7 @@
     <title>TrueIngre AI-Powered Food Package Analyzer</title>
     <link rel="icon" type="image/png" sizes="32x32" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥗</text></svg>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
     <style>
         :root {
@@ -23,9 +24,6 @@
             --warning-color: #FFC107;
             --danger-color: #ff4757;
             --info-color: #3742fa;
-            --shadow-light: rgba(0, 0, 0, 0.1);
-            --shadow-medium: rgba(0, 0, 0, 0.2);
-            --shadow-heavy: rgba(0, 0, 0, 0.4);
         }
 
         * {
@@ -63,49 +61,6 @@
             50% { opacity: 0.8; }
         }
 
-        /* Floating Particles */
-        .floating-particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .particle {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            background: rgba(108, 99, 255, 0.4);
-            border-radius: 50%;
-            animation: float 8s ease-in-out infinite;
-        }
-
-        .particle:nth-child(even) {
-            background: rgba(255, 107, 107, 0.3);
-            animation-duration: 10s;
-        }
-
-        .particle:nth-child(3n) {
-            background: rgba(78, 205, 196, 0.3);
-            animation-duration: 12s;
-        }
-
-        @keyframes float {
-            0%, 100% { 
-                transform: translateY(0px) translateX(0px) rotate(0deg); 
-                opacity: 0; 
-            }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            50% { 
-                transform: translateY(-150px) translateX(20px) rotate(180deg); 
-                opacity: 0.8; 
-            }
-        }
-
         /* Typography */
         .gradient-text {
             background: var(--accent-gradient);
@@ -123,7 +78,7 @@
             border: 1px solid var(--glass-border);
             border-radius: 24px;
             box-shadow: 
-                0 25px 50px var(--shadow-heavy),
+                0 25px 50px rgba(0, 0, 0, 0.4),
                 0 0 0 1px rgba(255, 255, 255, 0.05),
                 inset 0 1px 0 rgba(255, 255, 255, 0.1);
             position: relative;
@@ -144,7 +99,7 @@
         .glass-card:hover {
             transform: translateY(-2px);
             box-shadow: 
-                0 35px 70px var(--shadow-heavy),
+                0 35px 70px rgba(0, 0, 0, 0.4),
                 0 0 0 1px rgba(255, 255, 255, 0.08),
                 inset 0 1px 0 rgba(255, 255, 255, 0.15);
         }
@@ -184,6 +139,14 @@
             color: var(--text-secondary);
             max-width: 600px;
             margin: 0 auto;
+            font-weight: 400;
+        }
+        .header-subtitle-sub {
+            font-size: clamp(0.5rem, 1.5vw, 0.75rem);
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            padding-top: 4px;
             font-weight: 400;
         }
 
@@ -233,6 +196,41 @@
             color: var(--text-muted);
             margin-bottom: 1rem;
             font-size: clamp(0.9rem, 2vw, 1rem);
+        }
+
+        /* Upload Options */
+        .upload-options {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .upload-option-btn {
+            background: var(--accent-gradient);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .upload-option-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(108, 99, 255, 0.3);
+        }
+
+        .upload-option-btn:active {
+            transform: translateY(0);
         }
 
         /* Button Styles */
@@ -328,6 +326,16 @@
             .action-buttons button {
                 width: 100%;
             }
+
+            .upload-options {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .upload-option-btn {
+                width: 100%;
+                max-width: 200px;
+            }
         }
 
         /* Image Preview */
@@ -342,7 +350,7 @@
             max-width: 100%;
             max-height: clamp(250px, 50vw, 400px);
             border-radius: 16px;
-            box-shadow: 0 20px 40px var(--shadow-medium);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             object-fit: cover;
             margin: 0 auto;
@@ -351,7 +359,7 @@
 
         .image-preview:hover {
             transform: scale(1.02);
-            box-shadow: 0 25px 50px var(--shadow-heavy);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
         }
 
         /* Progress Section */
@@ -390,7 +398,7 @@
             border-radius: 20px;
             padding: clamp(1.5rem, 4vw, 2.5rem);
             margin: clamp(1rem, 3vw, 2rem) 0;
-            box-shadow: 0 20px 40px var(--shadow-medium);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             position: relative;
             overflow: hidden;
         }
@@ -463,34 +471,99 @@
             font-size: clamp(0.8rem, 2vw, 0.9rem);
         }
 
-        /* Ingredient Items */
-        .ingredient-item {
+        /* Content Cards */
+        .content-card {
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: clamp(1rem, 3vw, 1.5rem);
-            margin: 0.75rem 0;
-            border-left: 4px solid transparent;
+            margin: 1rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             backdrop-filter: blur(10px);
         }
 
-        .ingredient-positive { 
-            border-left-color: var(--success-color); 
-            background: rgba(76, 175, 80, 0.08);
-        }
-        .ingredient-neutral { 
-            border-left-color: var(--info-color); 
-            background: rgba(55, 66, 250, 0.08);
-        }
-        .ingredient-negative { 
-            border-left-color: var(--danger-color); 
-            background: rgba(255, 71, 87, 0.08);
+        .content-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
-        .ingredient-item:hover {
+        .content-card h5 {
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .content-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* List Items */
+        .list-item {
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .concern-item {
+            background: rgba(255, 71, 87, 0.1);
+            border-left: 3px solid var(--danger-color);
+        }
+
+        .positive-item {
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 3px solid var(--success-color);
+        }
+
+        .list-item:hover {
             background: rgba(255, 255, 255, 0.1);
-            transform: translateX(8px) translateY(-2px);
-            box-shadow: 0 10px 25px var(--shadow-light);
+            transform: translateX(8px);
+        }
+
+        .list-item i {
+            margin-top: 0.1rem;
+            font-size: 1rem;
+        }
+
+        /* Recommendation Cards */
+        .recommendation-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .recommendation-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .recommendation-card h6 {
+            color: var(--info-color);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .recommendation-card p {
+            color: var(--text-secondary);
+            margin: 0;
+            line-height: 1.5;
         }
 
         /* Badges */
@@ -560,28 +633,6 @@
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
-
-        /* Responsive Grid */
-        .nutrition-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: clamp(0.75rem, 2vw, 1rem);
-            margin: 1rem 0;
-        }
-
-        .nutrition-item {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: clamp(1rem, 3vw, 1.25rem);
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .nutrition-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
         }
 
         /* Mobile Optimizations */
@@ -655,52 +706,34 @@
             opacity: 0.8;
         }
 
-        /* Enhanced glass effects for better visibility */
-        .glass-card {
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            background: rgba(30, 30, 63, 0.85);
-        }
-
-        /* Better contrast for text elements */
-        .text-muted {
-            color: var(--text-muted) !important;
-        }
-
+        /* Enhanced text readability */
         .lead {
             font-size: clamp(1rem, 2.5vw, 1.125rem);
             font-weight: 400;
             line-height: 1.6;
+            color: var(--text-secondary);
         }
 
-        /* Additional styles for better content display */
-        .concern-item, .positive-item {
-            padding: 0.5rem 1rem;
-            margin: 0.5rem 0;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
+        .text-muted {
+            color: var(--text-muted) !important;
         }
 
-        .concern-item {
-            background: rgba(255, 71, 87, 0.1);
-            border-left: 3px solid var(--danger-color);
+        /* Empty state styling */
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
         }
 
-        .positive-item {
-            background: rgba(76, 175, 80, 0.1);
-            border-left: 3px solid var(--success-color);
-        }
-
-        .concern-item i, .positive-item i {
-            margin-right: 0.75rem;
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.6;
         }
     </style>
 </head>
 
 <body>
-    <!-- Floating Background Elements -->
-    <div class="floating-particles" id="particles"></div>
-
     <div class="container py-4">
         <!-- Header -->
         <div class="header-container">
@@ -708,8 +741,9 @@
                 <span class="gradient-text">🍃 TrueIngre.ai</span>
             </h1>
             <p class="header-subtitle">
-                AI-powered food package analyzer for instant health insights
+                AI-powered food package ingredients analyzer for instant insights.
             </p>
+            
         </div>
 
         <!-- Upload Section -->
@@ -717,17 +751,33 @@
             <div class="glass-card p-4">
                 <div class="row">
                     <div class="col-lg-8 mb-4 mb-lg-0">
-                        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('imageInput').click()">
+                        <div class="upload-zone" id="uploadZone">
                             <span class="upload-icon">📷</span>
-                            <h4 class="mb-2">Upload Food Package Image</h4>
-                            <p class="text-muted mb-3">Drag & drop or click to browse your device</p>
+                            <h4 class="mb-2">Upload Food Package ingredients Image</h4>
+                            <p class="text-muted mb-3">Choose your preferred method to add an image</p>
+                            
+                            <!-- Upload Options -->
+                            <div class="upload-options">
+                                <button class="upload-option-btn" onclick="document.getElementById('imageInput').click()">
+                                    <i class="fas fa-folder-open"></i>
+                                    Choose from Gallery
+                                </button>
+                                <button class="upload-option-btn" onclick="document.getElementById('cameraInput').click()">
+                                    <i class="fas fa-camera"></i>
+                                    Take Photo
+                                </button>
+                            </div>
+                            
                             <div class="d-flex justify-content-center gap-2 flex-wrap">
                                 <span class="badge bg-secondary">📄 JPG</span>
                                 <span class="badge bg-secondary">🖼️ PNG</span>
                                 <span class="badge bg-secondary">🎨 WEBP</span>
                             </div>
                         </div>
+                        <!-- Gallery Input -->
                         <input type="file" id="imageInput" accept="image/*" class="d-none">
+                        <!-- Camera Input -->
+                        <input type="file" id="cameraInput" accept="image/*" capture="environment" class="d-none">
                     </div>
                     <div class="col-lg-4">
                         <div class="preview-container">
@@ -763,7 +813,9 @@
             <span class="me-2">⚠️</span>
             <span id="errorMessage"></span>
         </div>
-
+<p class="header-subtitle-sub">
+                AI-generated reference only!
+            </p>
         <!-- Results Section -->
         <div id="resultsSection" style="display: none;">
             <!-- Health Score Card -->
@@ -784,21 +836,40 @@
             <!-- Detailed Analysis -->
             <div class="result-card slide-in">
                 <h4 class="section-title">🔬 Detailed Analysis</h4>
-                <div id="detailedAnalysis">
-                    <div class="text-center p-4">
-                        <div class="spinner"></div>
-                        <p class="mt-3">Analyzing ingredients and nutritional information...</p>
+                <div class="content-card">
+                    <div id="detailedAnalysis">
+                        <div class="text-center p-4">
+                            <div class="spinner"></div>
+                            <p class="mt-3">Analyzing nutritional information...</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Ingredients Analysis -->
+            <!-- Ingredients Found -->
             <div class="result-card slide-in">
-                <h4 class="section-title">📋 Ingredients Breakdown</h4>
-                <div id="ingredientsAnalysis">
-                    <div class="text-center p-4">
-                        <div class="spinner"></div>
-                        <p class="mt-3">Breaking down ingredients...</p>
+                <h4 class="section-title">📋 Ingredients Identified</h4>
+                <div class="content-card">
+                    <h5><i class="fas fa-list-ul me-2"></i>Found Ingredients</h5>
+                    <div id="ingredientsFound">
+                        <div class="text-center p-4">
+                            <div class="spinner"></div>
+                            <p class="mt-3">Identifying ingredients...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ingredient Analysis -->
+            <div class="result-card slide-in">
+                <h4 class="section-title">🧪 Ingredient Analysis</h4>
+                <div class="content-card">
+                    <h5><i class="fas fa-microscope me-2"></i>Health Impact Assessment</h5>
+                    <div id="ingredientAnalysis">
+                        <div class="text-center p-4">
+                            <div class="spinner"></div>
+                            <p class="mt-3">Analyzing ingredient health impacts...</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -827,11 +898,28 @@
 
             <!-- Allergen Information -->
             <div class="result-card slide-in">
-                <h4 class="section-title">⚠️ Allergen Information</h4>
-                <div id="allergenInfo">
-                    <div class="text-center p-4">
-                        <div class="spinner"></div>
-                        <p class="mt-3">Checking for allergens...</p>
+                <h4 class="section-title">🚨 Allergen Information</h4>
+                <div class="content-card">
+                    <h5><i class="fas fa-exclamation-triangle me-2"></i>Allergen Details</h5>
+                    <div id="allergenInfo">
+                        <div class="text-center p-4">
+                            <div class="spinner"></div>
+                            <p class="mt-3">Checking for allergens...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Consumption Advice -->
+            <div class="result-card slide-in">
+                <h4 class="section-title">📅 Consumption Advice</h4>
+                <div class="content-card">
+                    <h5><i class="fas fa-calendar-alt me-2"></i>Recommended Frequency</h5>
+                    <div id="consumptionAdvice">
+                        <div class="text-center p-4">
+                            <div class="spinner"></div>
+                            <p class="mt-3">Generating consumption advice...</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -866,6 +954,7 @@
         // DOM Elements
         const uploadZone = document.getElementById('uploadZone');
         const imageInput = document.getElementById('imageInput');
+        const cameraInput = document.getElementById('cameraInput');
         const imagePreview = document.getElementById('imagePreview');
         const analyzeBtn = document.getElementById('analyzeBtn');
         const clearBtn = document.getElementById('clearBtn');
@@ -873,27 +962,9 @@
         const errorSection = document.getElementById('errorSection');
         const resultsSection = document.getElementById('resultsSection');
 
-        // Initialize floating particles
-        document.addEventListener('DOMContentLoaded', function() {
-            createFloatingParticles();
-        });
-
-        function createFloatingParticles() {
-            const particlesContainer = document.getElementById('particles');
-            const particleCount = 20;
-
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 6 + 's';
-                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
-                particlesContainer.appendChild(particle);
-            }
-        }
-
         // Event Listeners
         imageInput.addEventListener('change', handleImageSelect);
+        cameraInput.addEventListener('change', handleImageSelect);
         analyzeBtn.addEventListener('click', analyzeImage);
         clearBtn.addEventListener('click', clearImage);
 
@@ -945,6 +1016,7 @@
             selectedImage = null;
             extractedText = '';
             imageInput.value = '';
+            cameraInput.value = '';
             imagePreview.innerHTML = '';
             analyzeBtn.disabled = true;
             clearBtn.style.display = 'none';
@@ -993,14 +1065,12 @@
                 try {
                     updateProgress(25, 'Initializing OCR engine...', 'Loading Tesseract worker...');
                     
-                    // Create worker without logger function
                     worker = await Tesseract.createWorker();
                     
-                    // Handle progress updates externally
                     worker.onProgress = (progress) => {
                         console.log('OCR Progress:', progress);
                         if (progress.status === 'recognizing text') {
-                            const percent = Math.round(progress.progress * 35) + 30; // 30-65%
+                            const percent = Math.round(progress.progress * 35) + 30;
                             updateProgress(percent, 'Extracting text from image...', 
                                 `Recognition: ${Math.round(progress.progress * 100)}%`);
                         }
@@ -1008,11 +1078,9 @@
                     
                     updateProgress(40, 'Loading language model...', 'Preparing for text recognition...');
                     
-                    // Load English language
                     await worker.loadLanguage('eng');
                     await worker.initialize('eng');
                     
-                    // Set OCR parameters
                     await worker.setParameters({
                         tessedit_ocr_engine_mode: Tesseract.OEM.TESSERACT_LSTM_COMBINED,
                         tessedit_pageseg_mode: Tesseract.PSM.AUTO,
@@ -1021,13 +1089,11 @@
 
                     updateProgress(45, 'OCR engine ready', 'Starting text recognition...');
                     
-                    // Perform OCR
                     const { data: { text, confidence } } = await worker.recognize(imageFile);
                     
                     console.log('OCR Confidence:', confidence);
                     console.log('Extracted Text:', text);
                     
-                    // Clean up worker
                     await worker.terminate();
                     worker = null;
                     
@@ -1069,7 +1135,10 @@
 
         async function sendToAI(text) {
             try {
-                const response = await fetch('https://slangiee.social/api/analyze-food', { // Adjust URL for your Laravel backend
+                // Update these URLs based on your setup
+                // https://slangiee.social
+                // http://localhost:8000
+                const response = await fetch('https://slangiee.social/api/analyze-food', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1094,9 +1163,6 @@
         function displayResults(analysis) {
             resultsSection.style.display = 'block';
 
-            // Clean up the analysis data in case it contains JSON strings
-            analysis = cleanAnalysisData(analysis);
-
             // Display health score
             const score = analysis.health_score || 0;
             document.getElementById('healthScore').textContent = score;
@@ -1112,54 +1178,35 @@
 
             // Display detailed analysis
             document.getElementById('detailedAnalysis').innerHTML =
-                formatDetailedAnalysis(analysis.detailed_analysis || 'No detailed analysis available');
+                formatDetailedAnalysis(analysis.detailed_analysis);
 
-            // Display ingredients
-            document.getElementById('ingredientsAnalysis').innerHTML =
-                formatIngredients(analysis.ingredients_analysis || []);
+            // Display ingredients found
+            document.getElementById('ingredientsFound').innerHTML =
+                formatIngredientsFound(analysis.ingredients_found);
+
+            // Display ingredient analysis
+            document.getElementById('ingredientAnalysis').innerHTML =
+                formatIngredientAnalysis(analysis.ingredient_analysis);
 
             // Display nutritional concerns
             document.getElementById('nutritionalConcerns').innerHTML =
-                formatNutritionalConcerns(analysis.nutritional_concerns || []);
+                formatNutritionalConcerns(analysis.nutritional_concerns);
 
             // Display positive aspects
             document.getElementById('positiveAspects').innerHTML =
-                formatPositiveAspects(analysis.positive_aspects || []);
+                formatPositiveAspects(analysis.positive_aspects);
 
             // Display allergen information
             document.getElementById('allergenInfo').innerHTML =
-                formatAllergenInfo(analysis.allergen_information || 'No allergen information provided');
+                formatAllergenInfo(analysis.allergen_information);
+
+            // Display consumption advice
+            document.getElementById('consumptionAdvice').innerHTML =
+                formatConsumptionAdvice(analysis.consumption_advice);
 
             // Display recommendations
             document.getElementById('recommendations').innerHTML =
-                formatRecommendations(analysis.recommendations || []);
-        }
-
-        function cleanAnalysisData(analysis) {
-            // If the response contains JSON strings in fields, try to parse them
-            const cleaned = {...analysis};
-            
-            // Check if detailed_analysis is actually a JSON string
-            if (typeof cleaned.detailed_analysis === 'string' && cleaned.detailed_analysis.trim().startsWith('{')) {
-                try {
-                    const parsed = JSON.parse(cleaned.detailed_analysis);
-                    cleaned.detailed_analysis = parsed.description || parsed.detailed_analysis || cleaned.detailed_analysis;
-                } catch (e) {
-                    console.log('Could not parse detailed_analysis as JSON');
-                }
-            }
-
-            // Check if overall_assessment is actually a JSON string
-            if (typeof cleaned.overall_assessment === 'string' && cleaned.overall_assessment.trim().startsWith('{')) {
-                try {
-                    const parsed = JSON.parse(cleaned.overall_assessment);
-                    cleaned.overall_assessment = parsed.overall_assessment || parsed.description || cleaned.overall_assessment;
-                } catch (e) {
-                    console.log('Could not parse overall_assessment as JSON');
-                }
-            }
-
-            return cleaned;
+                formatRecommendations(analysis.recommendations);
         }
 
         function getScoreClass(score) {
@@ -1184,56 +1231,47 @@
         }
 
         function formatDetailedAnalysis(analysis) {
-            if (typeof analysis === 'string') {
-                // Clean up the string if it contains JSON artifacts
-                const cleaned = analysis.replace(/\\"/g, '"')
-                                       .replace(/\{.*?\}/g, '')
-                                       .replace(/```json|```/g, '')
-                                       .trim();
-                return `<p class="lead">${cleaned}</p>`;
+            if (!analysis || analysis.trim() === '') {
+                return '<div class="empty-state"><i class="fas fa-info-circle"></i><p>No detailed analysis available</p></div>';
             }
-            return '<p class="lead">Detailed analysis is being processed...</p>';
+            return `<p class="lead">${analysis}</p>`;
         }
 
-        function formatIngredients(ingredients) {
-            if (!Array.isArray(ingredients) || ingredients.length === 0) {
-                return '<p class="text-muted">No specific ingredients identified</p>';
+        function formatIngredientsFound(ingredients) {
+            if (!ingredients || ingredients.trim() === '') {
+                return '<div class="empty-state"><i class="fas fa-search"></i><p>No specific ingredients identified</p></div>';
             }
+            
+            // Split ingredients by common delimiters and create badges
+            const ingredientList = ingredients.split(/[,;]/).map(ing => ing.trim()).filter(ing => ing.length > 0);
+            
+            if (ingredientList.length === 0) {
+                return `<p class="text-muted">${ingredients}</p>`;
+            }
+            
+            return `
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    ${ingredientList.map(ingredient => 
+                        `<span class="badge bg-secondary">${ingredient}</span>`
+                    ).join('')}
+                </div>
+            `;
+        }
 
-            return ingredients.map(ingredient => {
-                // Handle case where ingredient might be a string instead of object
-                if (typeof ingredient === 'string') {
-                    return `
-                        <div class="ingredient-item ingredient-neutral">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h6 class="mb-1">${ingredient}</h6>
-                                <span class="badge bg-secondary">unknown</span>
-                            </div>
-                            <p class="mb-0 small text-muted">No description available</p>
-                        </div>
-                    `;
-                }
-                
-                const category = ingredient.category ? ingredient.category.toLowerCase() : 'moderate';
-                return `
-                    <div class="ingredient-item ingredient-${category}">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="mb-1">${ingredient.name || 'Unknown ingredient'}</h6>
-                            <span class="badge bg-secondary">${ingredient.category || 'unknown'}</span>
-                        </div>
-                        <p class="mb-0 small text-muted">${ingredient.description || 'No description available'}</p>
-                    </div>
-                `;
-            }).join('');
+        function formatIngredientAnalysis(analysis) {
+            if (!analysis || analysis.trim() === '') {
+                return '<div class="empty-state"><i class="fas fa-microscope"></i><p>Ingredient analysis not available</p></div>';
+            }
+            return `<p class="lead">${analysis}</p>`;
         }
 
         function formatNutritionalConcerns(concerns) {
             if (!Array.isArray(concerns) || concerns.length === 0) {
-                return '<p class="text-muted">No significant nutritional concerns identified</p>';
+                return '<div class="empty-state"><i class="fas fa-check-circle text-success"></i><p>No significant nutritional concerns identified</p></div>';
             }
 
             return concerns.map(concern => `
-                <div class="concern-item">
+                <div class="list-item concern-item">
                     <i class="fas fa-exclamation-triangle text-danger"></i>
                     <span>${concern}</span>
                 </div>
@@ -1242,11 +1280,11 @@
 
         function formatPositiveAspects(positives) {
             if (!Array.isArray(positives) || positives.length === 0) {
-                return '<p class="text-muted">No significant positive aspects identified</p>';
+                return '<div class="empty-state"><i class="fas fa-info-circle"></i><p>No significant positive aspects identified</p></div>';
             }
 
             return positives.map(positive => `
-                <div class="positive-item">
+                <div class="list-item positive-item">
                     <i class="fas fa-check-circle text-success"></i>
                     <span>${positive}</span>
                 </div>
@@ -1255,48 +1293,68 @@
 
         function formatAllergenInfo(allergenInfo) {
             if (!allergenInfo || allergenInfo.trim() === '') {
-                return '<p class="text-muted">No allergen information provided</p>';
+                return '<div class="empty-state"><i class="fas fa-question-circle"></i><p>No allergen information provided</p></div>';
             }
             return `<p class="lead">${allergenInfo}</p>`;
         }
 
-        function formatRecommendations(recommendations) {
-            if (!Array.isArray(recommendations) || recommendations.length === 0) {
-                return '<p class="text-muted">No specific recommendations available</p>';
+        function formatConsumptionAdvice(advice) {
+            if (!advice || advice.trim() === '') {
+                return '<div class="empty-state"><i class="fas fa-calendar-alt"></i><p>No specific consumption advice available</p></div>';
             }
-
+            
+            // Determine the icon based on advice content
+            let icon = 'fa-calendar-alt';
+            let colorClass = 'text-info';
+            
+            if (advice.toLowerCase().includes('avoid') || advice.toLowerCase().includes('rarely')) {
+                icon = 'fa-ban';
+                colorClass = 'text-danger';
+            } else if (advice.toLowerCase().includes('moderation') || advice.toLowerCase().includes('limit')) {
+                icon = 'fa-balance-scale';
+                colorClass = 'text-warning';
+            } else if (advice.toLowerCase().includes('regularly') || advice.toLowerCase().includes('enjoyed')) {
+                icon = 'fa-thumbs-up';
+                colorClass = 'text-success';
+            }
+            
             return `
-                <div class="row">
-                    ${recommendations.map(rec => {
-                        // Handle case where recommendation might be a string instead of object
-                        if (typeof rec === 'string') {
-                            return `
-                                <div class="col-md-6 mb-3">
-                                    <div class="glass-card p-3">
-                                        <h6 class="text-info mb-2">
-                                            <i class="fas fa-info-circle me-2"></i>
-                                            Recommendation
-                                        </h6>
-                                        <p class="mb-0 small">${rec}</p>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                        
-                        return `
-                            <div class="col-md-6 mb-3">
-                                <div class="glass-card p-3">
-                                    <h6 class="text-info mb-2">
-                                        <i class="fas ${rec.icon || 'fa-info-circle'} me-2"></i>
-                                        ${rec.title || 'Recommendation'}
-                                    </h6>
-                                    <p class="mb-0 small">${rec.description || rec}</p>
-                                </div>
-                            </div>
-                        `;
-                    }).join('')}
+                <div class="d-flex align-items-start gap-3">
+                    <i class="fas ${icon} ${colorClass} mt-1" style="font-size: 1.2rem;"></i>
+                    <p class="lead mb-0">${advice}</p>
                 </div>
             `;
+        }
+
+        function formatRecommendations(recommendations) {
+            if (!Array.isArray(recommendations) || recommendations.length === 0) {
+                return '<div class="empty-state"><i class="fas fa-lightbulb"></i><p>No specific recommendations available</p></div>';
+            }
+
+            return recommendations.map(rec => {
+                // Handle case where recommendation might be a string instead of object
+                if (typeof rec === 'string') {
+                    return `
+                        <div class="recommendation-card">
+                            <h6>
+                                <i class="fas fa-info-circle me-2"></i>
+                                Health Recommendation
+                            </h6>
+                            <p>${rec}</p>
+                        </div>
+                    `;
+                }
+                
+                return `
+                    <div class="recommendation-card">
+                        <h6>
+                            <i class="fas ${rec.icon || 'fa-info-circle'} me-2"></i>
+                            ${rec.title || 'Recommendation'}
+                        </h6>
+                        <p>${rec.description || rec}</p>
+                    </div>
+                `;
+            }).join('');
         }
 
         function showProgress() {
